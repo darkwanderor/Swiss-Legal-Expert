@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+.ipynb_checkpoints
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Machine Learning Models & Artifacts
+*.pt
+*.pth
+*.bin
+*.safetensors
+*.onnx
+*.model
+*.joblib
+*.pkl
+*.npy
+*.npz
+
+# Datasets & Indices (Massive Files)
+*.csv
+*.tsv
+*.parquet
+*.arrow
+*.index
+*.faiss
+*.jsonl
+
+# Logs & Temp
+logs/
+*.log
+tmp/
+temp/

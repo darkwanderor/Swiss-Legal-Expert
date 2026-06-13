@@ -1,0 +1,22 @@
+# Core ML & Deep Learning
+torch>=2.0.0
+transformers>=4.35.0
+sentence-transformers>=2.2.2
+accelerate>=0.24.0
+
+# Vector Search & Scientific Computing
+faiss-cpu>=1.7.4  # Use faiss-gpu if running on CUDA hardware
+scipy>=1.11.0
+numpy>=1.24.0
+scikit-learn>=1.3.0
+
+# Data Engineering & Out-of-Core Processing
+pandas>=2.0.0
+pyarrow>=14.0.0
+
+# Gradient Boosting (Reranking)
+lightgbm>=4.1.0
+xgboost>=2.0.0
+
+# Utilities
+tqdm>=4.66.0
