@@ -121,42 +121,62 @@ The strict zero-leakage validation set focuses heavily on queries with severe se
 
 The codebase is engineered to execute sequentially under strict offline container limits without internet access.
 
+### Phase 0: Environment Setup
+
+
+**Option A: Docker**
 ```bash
+# Build the container (ignores large files via .dockerignore)
+docker build -t swiss-legal-expert .
+
+# Run interactively with GPU access and mount your local data folder
+docker run -it --gpus all -v $(pwd)/data:/app/data swiss-legal-expert
+```
+
+**Option B: Local Environment**
+```bash
+pip install -r requirements.txt
+```
+
 ### Phase 1: Offline Preparation (Training & Indexing)
+```bash
 # 1. Build the FAISS and Sparse Vector Indexes
-python kaggle_chain/00a_build_corpus_index.py
+python 00a_build_corpus_index.py
 
 # 2. Generate training candidates (FAISS retrieval on train set)
-python kaggle_chain/01_hybrid_retrieval.py --dataset train
+python 01_hybrid_retrieval.py --dataset train
 
 # 3. Train the LightGBM LambdaRank Reranker
-python kaggle_chain/00b_train_lightgbm.py
+python 00b_train_lightgbm.py
+```
 
 ### Phase 2: Inference Pipeline (Test Set)
+```bash
 # 4. Execute Asymmetric Multi-Vector Retrieval on Test Queries
-python kaggle_chain/01_hybrid_retrieval.py --dataset test
+python 01_hybrid_retrieval.py --dataset test
 
 # 5. Rerank Candidates using pre-trained LightGBM weights
-python kaggle_chain/02_lightgbm_sort.py
+python 02_lightgbm_sort.py
 
 # 6. Extract Full-Text for Top Candidates
-python kaggle_chain/03_prepare_fulltext.py
+python 03_prepare_fulltext.py
 
 # 7. Score Candidates with Qwen3-4B-Instruct
-python kaggle_chain/04_qwen_offline_scorer.py
+python 04_qwen_offline_scorer.py
 
 # 8. Apply Adaptive Thresholds & Rollup Normalization
-python kaggle_chain/05_adaptive_submission.py
+python 05_adaptive_submission.py
 
 # 9. Evaluate Final Metrics
-python kaggle_chain/06_evaluate.py
+python 06_evaluate.py
 ```
 ## 🛠️ Technical Stack
 
-- **Languages & Frameworks**: Python 3.10+, PyTorch, HuggingFace Transformers, SentenceTransformers.
-- **Search & Retrieval**: FAISS (Dense Vector Indexing), SciPy (Sparse Matrices), Custom TF-IDF, Advanced RegEx.
-- **Ranking & Modeling**: LightGBM (LambdaRank), Qwen LLM family (4B, 8B, 14B).
-- **System Architecture**: Modular execution pipeline, Disk-backed Caching (Pandas & PyArrow), Offline Container constraints.
+- **Core ML Frameworks**: `PyTorch`, `Transformers`, `SentenceTransformers`, `Accelerate`
+- **Search Engines**: `FAISS` (Dense Indexing), `SciPy` & `Scikit-Learn` (Sparse Matrices)
+- **Modeling & Ranking**: `LightGBM` & `XGBoost` (Tree-based Reranking), `Qwen 2.5 / 3` (Pointwise Scoring)
+- **Data Engineering**: `PyArrow` (Out-of-Core Memory Mapping), `Pandas`, `NumPy`
+- **Infrastructure**: `Docker` (Offline Containerization)
 
 > **💡 Architecture Note: Decoupling Search from I/O**
 
