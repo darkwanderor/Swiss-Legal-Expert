@@ -55,10 +55,11 @@ graph TD
     LGBM --> |Top 20| Pointwise(Qwen3-4B Scorer)
     
     Pointwise --> Adaptive{Alpha Threshold}
-    Adaptive --> |Dynamic Cutoff| Final((Final Citations))
+    Adaptive --> Rollup(Rollup Normalization)
+    Rollup --> Final((Final Citations))
     
     class Q,H,Final mainNode;
-    class V,Pointwise subNode;
+    class V,Pointwise,Rollup subNode;
     class LGBM,Adaptive,RRF finalNode;
 ```
 
